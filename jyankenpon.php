@@ -108,7 +108,7 @@ class Scissors implements WeaponType
  */
 class WeaponFactory {
 
-    public static function createByName($weapon_name)
+    public static function createByName(string $weapon_name)
     {
         foreach (WeaponNames::cases() as $weapon_name_obj) {
             if ($weapon_name_obj->value !== $weapon_name) {
@@ -116,7 +116,7 @@ class WeaponFactory {
             }
             return self::create($weapon_name_obj);
         }
-        throw new Exception('やり直し');
+        throw new Exception('名称が不正です');
     }
 
     public static function createRandom()
@@ -188,11 +188,16 @@ echo jyankenpon($argv);
  */
 function jyankenpon(array $params): string
 {
+    $error_msg = 'やり直し';
+
+    if (empty($params[1])) {
+        return $error_msg;
+    }
     // 武器名
     $weapon_name = $params[1];
 
     // 武器オブジェクト生成
-    $my_weapon = createMyWeapon($weapon_name);
+    $my_weapon = createMyWeapon($weapon_name, $error_msg);
 
     // ジャンケン
     $jyanken = new Jyanken();
@@ -204,14 +209,15 @@ function jyankenpon(array $params): string
  * 自分の武器オブジェクト生成
  * 
  * @param string $weapon_name
+ * @param string $error_msg
  * @return WeaponType
  */
-function createMyWeapon(string $weapon_name)
+function createMyWeapon(string $weapon_name, string $error_msg)
 {
     try {
         return WeaponFactory::createByName($weapon_name);
     } catch (Exception $e) {
-        echo $e->getMessage();
+        echo $error_msg;
         exit;
     }
 }
