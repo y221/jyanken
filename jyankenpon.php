@@ -164,10 +164,11 @@ class Judge
  */
 class Jyanken
 {
-
-    public function _construct()
+    private $other_member_count = 0;
+    public function _construct($count)
     {
         // 拡張する時に必要になりそう
+
     }
 
     public function pon(WeaponType $my_weapon)
@@ -197,27 +198,13 @@ function jyankenpon(array $params): string
     $weapon_name = $params[1];
 
     // 武器オブジェクト生成
-    $my_weapon = createMyWeapon($weapon_name, $error_msg);
+    try {
+        $my_weapon = WeaponFactory::createByName($weapon_name);
+    } catch (Exception $e) {
+        return $error_msg;
+    }
 
     // ジャンケン
     $jyanken = new Jyanken();
     return $jyanken->pon($my_weapon);
-}
-
-
-/**
- * 自分の武器オブジェクト生成
- * 
- * @param string $weapon_name
- * @param string $error_msg
- * @return WeaponType
- */
-function createMyWeapon(string $weapon_name, string $error_msg)
-{
-    try {
-        return WeaponFactory::createByName($weapon_name);
-    } catch (Exception $e) {
-        echo $error_msg;
-        exit;
-    }
 }
